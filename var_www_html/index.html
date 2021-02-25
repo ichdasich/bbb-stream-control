@@ -1,0 +1,34 @@
+<head>
+  <link href="/video-js.css" rel="stylesheet" />
+</head>
+
+<body>
+  <script src="/video.min.js"></script>
+
+  <video
+    id="my-video"
+    class="video-js vjs-big-play-centered"
+    controls
+    preload="auto"
+    width="640"
+    height="264"
+    poster="/poster.jpg"
+    data-setup="{}"
+  >
+    <script>
+      videojs.addLanguage('en', {"The media could not be loaded, either because the server or network failed or because the format is not supported.": "The room you are trying to access does not stream video (yet)."});
+      var newURL = window.location.pathname;
+      streamid = newURL.replace("/streams/","").replace("/","");
+      var src = "https://bbb.example.com/hls/" + streamid + ".m3u8";
+      var myVideo = videojs('my-video');
+      myVideo.src([
+        {type: "application/x-mpegURL", src: src}
+      ]);
+      myVideo.fluid(true);
+    </script>
+    <p class="vjs-no-js">
+      To view this video please enable JavaScript.
+    </p>
+  </video>
+
+</body>
