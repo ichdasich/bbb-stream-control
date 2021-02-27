@@ -169,9 +169,13 @@ def get_running_rooms():
 	mids = {}
 	if meetings:
 		for m in meetings.iter('meeting'):
+			user_no = m.find('participantCount').text
+			users = []
+			for u in m.find('attendees').iter('attendee'):
+				users.append(u.find('fullName').text)
 			meetid = m.find('meetingID').text
 			meetid_int = m.find('internalMeetingID').text
-			mids[meetid] = {'bbb_meet_id': meetid_int }
+			mids[meetid] = {'bbb_meet_id': meetid_int, 'users': users, 'user_no': int(user_no) }
 	return mids
 
 def check_streaming_rooms(meetingids):
@@ -213,12 +217,13 @@ def start_streaming(meetingids):
 			'BBB_STREAM_URL': BBB_RTMP_PATH + meetingids[bbbid]['roompath'],
 			'FFMPEG_STREAM_VIDEO_BITRATE': '4000',
 			'BBB_SECRET': BBB_SECRET,
+			'BBB_SHOW_CHAT': 'false',
 			'BBB_USER_NAME': 'Streaming User',
 			'BBB_CHAT_STREAM_URL': BBB_WEB_STREAM+meetingids[bbbid]['roompath']+'/',
 			'BBB_ATTENDEE_PASSWORD': meetingids[bbbid]['attendeepw']
 		}
 		
-		if not check_container_running(bbbid):
+		if not check_container_running(bbbid) and meetingids[bbbid]['user_no'] > 0 and not 'Streaming User' in meetingids[bbbid]['users']:
 			container = client.containers.run('aauzid/bigbluebutton-livestreaming', name='strm_'+bbbid, shm_size='2gb', environment=dockerenv, detach=True)
 
 def terminate_orphaned(meetingids):
@@ -229,6 +234,9 @@ def terminate_orphaned(meetingids):
 			
 			if not name in meetingids:
 				container.kill()
+			else:
+				if meetingids[name]['user_no'] == 1 and 'Streaming User' in meetingids[name]['users']:
+					container.kill()
 	client.containers.prune()
 		
 
