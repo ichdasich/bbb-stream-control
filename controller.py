@@ -122,7 +122,6 @@
 #     this CC0 or use of the Work.
 
 import sys
-import subprocess
 import re
 import hashlib
 import requests
