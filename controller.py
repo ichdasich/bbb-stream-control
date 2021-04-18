@@ -183,12 +183,12 @@ def check_streaming_rooms(meetingids):
 	cur = conn_auth.cursor()
 	
 	for bbbid in meetingids.keys():
-		cur.execute("SELECT * FROM rooms WHERE bbb_id = %s;", (bbbid,))
+		cur.execute("SELECT uid,attendee_pw,room_settings FROM rooms WHERE bbb_id = %s;", (bbbid,))
 		res = cur.fetchall()
 		if res:
-			roompath = res[0][3]
-			attendeepw = res[0][-3]
-			roomdata = json.loads(res[0][-5])
+			roompath = res[0][0]
+			attendeepw = res[0][1]
+			roomdata = json.loads(res[0][2])
 			if 'streaming' in roomdata:
 				if roomdata['streaming'] == True:
 					meetingids[bbbid]['roompath'] = roompath
