@@ -132,6 +132,7 @@ from xml.etree import ElementTree
 import psycopg2
 conn_auth = psycopg2.connect("dbname=greenlight_production user=postgres password=PASSWORD host=localhost")
 
+DAEMON=True
 BBB_URL = "https://bbb.example.com/bigbluebutton/"
 BBB_SECRET = "BBB_SECRET"
 BBB_RTMP_PATH = 'rtmp://192.168.178.23:1935/live/'
@@ -205,6 +206,7 @@ def check_container_running(bbbid):
 	return True
 
 def start_streaming(meetingids):
+	streamCount=0
 	client.containers.prune()
 	for bbbid in meetingids.keys():
 		dockerenv = {
@@ -225,7 +227,9 @@ def start_streaming(meetingids):
 		
 		if not check_container_running(bbbid) and meetingids[bbbid]['user_no'] > 0 and not 'Streaming User' in meetingids[bbbid]['users']:
 			container = client.containers.run('aauzid/bigbluebutton-livestreaming', name='strm_'+bbbid, shm_size='2gb', environment=dockerenv, detach=True)
-
+			streamCount += 1
+			print('Started container strm_'+bbbid+'\n')
+	return streamCount
 def terminate_orphaned(meetingids):
 	containers = client.containers.list()
 	for container in containers:
@@ -237,10 +241,17 @@ def terminate_orphaned(meetingids):
 			else:
 				if meetingids[name]['user_no'] == 1 and 'Streaming User' in meetingids[name]['users']:
 					container.kill()
+					print('Stopping container /strm_' == container.attrs['Name'][:6])
 	client.containers.prune()
 		
-
-mids = get_running_rooms()
-stream_mids  = check_streaming_rooms(mids)
-start_streaming(stream_mids)
-terminate_orphaned(stream_mids)
+while DAEMON:
+	delayTimout = 10
+	mids = get_running_rooms()
+	stream_mids  = check_streaming_rooms(mids)
+	retVal=start_streaming(stream_mids)
+	if retVal > 0:
+		# Delay next loop a little to allow container to start
+		delayTimout = 30
+	terminate_orphaned(stream_mids)
+	if DAEMON:
+		time.sleep(delayTimout)
