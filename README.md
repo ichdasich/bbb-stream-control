@@ -12,13 +12,18 @@ Streaming is supported with a local rtmp instance on nginx, producing HLS, which
 
 # Configuration overview
 
-## controller.py
-- Change the password in the psql connect string
-- `BBB_URL` = Your BBB server or loadbalancer endpoint
-- `BBB_SECRET` = Your BBB secret
-- `BBB_RTMP_PATH` = `'rtmp://192.168.178.23:1935/live/'`; The IP and port on which nginx listens for rtmp connections; Firewall from the internet
-- `BBB_WEB_STREAM` = `'https://bbb.example.com/streams/'`; The base-URL of your streams. Individual streams will look like `https://bbb.example.com/streams/xyz-123-zyx-412/`, depending on the room's path.
-- `BBB_RES` = Resolution for the stream, e.g., `'1920x1080'`; The higher the resolution, the higher the load on the machine.
+## config.json
+- `daemon` = True/False -  If using crontab model of execution or systemd
+- `bbb_url` = Your BBB server or loadbalancer endpoint
+- `bbb_secret` = Your BBB secret
+- `rtmp_path` = `'rtmp://192.168.178.23:1935/live/'`; The IP and port on which nginx listens for rtmp connections; Firewall from the internet
+- `web_stream` = `'https://bbb.example.com/streams/'`; The base-URL of your streams. Individual streams will look like `https://bbb.example.com/streams/xyz-123-zyx-412/`, depending on the room's path.
+- `bbb_res` = Resolution for the stream, e.g., `'1920x1080'`; The higher the resolution, the higher the load on the machine.
+- `postgresql` = configure postgresql
+     - `user` = postgresql username
+     - `password` =  postgresql password
+     - `host` = postgresql host (defaults to password)
+     - `port` = postgresql port (defaults to 5433)
 
 ## index.html
 - Set URL in `src` variable according to your infrastructure (could be done better, i know)
