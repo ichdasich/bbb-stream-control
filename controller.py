@@ -135,6 +135,8 @@ import psycopg2
 with open("config.json") as json_config_file:
 	config = json.load(json_config_file)
 
+POSTGRESHOST = "localhost"
+POSTGRESPORT = 5433
 if "postgresql" in config:
 	if "db" in config["postgresql"] and "user" in config["postgresql"] and "password" in config["postgresql"]:
 		POSTGRESDB = config["postgresql"]["db"]
@@ -145,10 +147,10 @@ if "postgresql" in config:
 		sys.exit(1)
 	if "port" in config["postgresql"]:
 		POSTGRESPORT = config["postgresql"]["port"]
-	else:
-		POSTGRESPORT = 5433
+	if "host" in config["postgresql"]:
+		POSTGRESHOST = config["postgresql"]["host"]
 
-conn_auth = psycopg2.connect("dbname=" + POSTGRESDB + " user=" + POSTGRESUSER + " password=" + POSTGRESPASS + " host=localhost port=" + POSTGRESPORT)
+conn_auth = psycopg2.connect("dbname=" + POSTGRESDB + " user=" + POSTGRESUSER + " password=" + POSTGRESPASS + " host=" + POSTGRESHOST + " port=" + POSTGRESPORT)
 
 DAEMON = False
 BBB_URL = ""
