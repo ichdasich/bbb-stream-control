@@ -131,14 +131,46 @@ import time
 from xml.etree import ElementTree
 
 import psycopg2
-conn_auth = psycopg2.connect("dbname=greenlight_production user=postgres password=PASSWORD host=localhost")
 
-DAEMON=False
-BBB_URL = "https://bbb.example.com/bigbluebutton/"
-BBB_SECRET = "BBB_SECRET"
-BBB_RTMP_PATH = 'rtmp://192.168.178.23:1935/live/'
-BBB_WEB_STREAM = 'https://bbb.example.com/streams/'
-BBB_RES = '1920x1080'
+with open("config.json") as json_config_file:
+	config = json.load(json_config_file)
+
+POSTGRESHOST = "localhost"
+POSTGRESPORT = 5433
+if "postgresql" in config:
+	if "db" in config["postgresql"] and "user" in config["postgresql"] and "password" in config["postgresql"]:
+		POSTGRESDB = config["postgresql"]["db"]
+		POSTGRESUSER = config["postgresql"]["user"]
+		POSTGRESPASS = config["postgresql"]["password"]
+	else:
+		print('Missing postgresql config')
+		sys.exit(1)
+	if "port" in config["postgresql"]:
+		POSTGRESPORT = config["postgresql"]["port"]
+	if "host" in config["postgresql"]:
+		POSTGRESHOST = config["postgresql"]["host"]
+
+conn_auth = psycopg2.connect("dbname=" + POSTGRESDB + " user=" + POSTGRESUSER + " password=" + POSTGRESPASS + " host=" + POSTGRESHOST + " port=" + POSTGRESPORT)
+
+DAEMON = False
+BBB_URL = ""
+BBB_SECRET = ""
+BBB_RTMP_PATH = ""
+BBB_WEB_STREAM = ""
+BBB_RES = "1920x1080"
+
+if "daemon" in config:
+	DAEMON = config["daemon"]
+if "bbb_url" in config:
+	BBB_URL = config["bbb_url"]
+if "bbb_secret" in config:
+	BBB_SECRET = config["bbb_secret"]
+if "rtmp_path" in config:
+	BBB_RTMP_PATH = config["rtmp_path"]
+if "web_stream" in config:
+	BBB_WEB_STREAM = config["web_stream"]
+if "bbb_res" in config:
+	BBB_RES = config['bbb_res']
 
 client = docker.from_env()
 
