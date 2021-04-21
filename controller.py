@@ -127,6 +127,7 @@ import hashlib
 import requests
 import docker
 import json
+import time
 from xml.etree import ElementTree
 
 import psycopg2
