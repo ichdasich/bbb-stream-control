@@ -1,0 +1,15 @@
+{
+  "daemon": true,
+  "postgresql": {
+    "db": "greenlight_production",
+     "user": "postgres",
+     "password": "PASSWORD",
+     "host": "localhost",
+     "port": "5433"
+  },
+  "bbb_url": "https://bbb.example.com/bigbluebutton/",
+  "bbb_secret": "BBB_SECRET",
+  "rtmp_path": "rtmp://192.168.178.23:1935/live/",
+  "web_stream": "https://bbb.example.com/streams/",
+  "bbb_res": "1920x1080"
+}
