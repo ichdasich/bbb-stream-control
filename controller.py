@@ -132,7 +132,7 @@ from xml.etree import ElementTree
 import psycopg2
 conn_auth = psycopg2.connect("dbname=greenlight_production user=postgres password=PASSWORD host=localhost")
 
-DAEMON=True
+DAEMON=False
 BBB_URL = "https://bbb.example.com/bigbluebutton/"
 BBB_SECRET = "BBB_SECRET"
 BBB_RTMP_PATH = 'rtmp://192.168.178.23:1935/live/'
