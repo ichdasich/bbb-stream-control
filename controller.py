@@ -244,7 +244,7 @@ def terminate_orphaned(meetingids):
 					print('Stopping container /strm_' == container.attrs['Name'][:6])
 	client.containers.prune()
 		
-while DAEMON:
+while True:
 	delayTimout = 10
 	mids = get_running_rooms()
 	stream_mids  = check_streaming_rooms(mids)
@@ -255,3 +255,5 @@ while DAEMON:
 	terminate_orphaned(stream_mids)
 	if DAEMON:
 		time.sleep(delayTimout)
+	else
+	    break
