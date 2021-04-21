@@ -255,5 +255,5 @@ while True:
 	terminate_orphaned(stream_mids)
 	if DAEMON:
 		time.sleep(delayTimout)
-	else
+	else:
 	    break
