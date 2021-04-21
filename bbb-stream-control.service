@@ -1,0 +1,16 @@
+[Unit]
+Description=BBB Live Stream Control
+Wants=network.target
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/bbb-stream-control/controller.py
+StandardOutput=syslog
+StandardError=syslog
+ExecStop=/bin/kill -s QUIT $MAINPID
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
