@@ -96,8 +96,23 @@ chmod +x /opt/bbb-stream-control/controller.py
 
 12. Pull the container (to speed up things on first try): `docker image pull aauzid/bigbluebutton-livestreaming`
 
-13. Install the cronjob running the script every minute:
-`cp bbb-stream-control.cron /etc/cron.d/bbb-stream-control`
+
+13. Install `CRON` or `DAEMON` method for execution
+
+  - Install the cronjob running the script every minute:    
+
+    `cp bbb-stream-control.cron /etc/cron.d/bbb-stream-control`
+
+    **OR**
+
+  - Install SystemD service that runs every 10-30 seconds
+
+```
+cp bbb-stream-control.service /etc/systemd/system
+systemctl enable bbb-stream-control
+systemctl start bbb-stream-control
+```
+  - set `DAEMON=True` in `controller.py`
 
 14. Place `var_www_html/index.html` into `/var/www/html/streams/` and adjust according to the config instructions above (change HLS URL)
 
